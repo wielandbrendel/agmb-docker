@@ -24,4 +24,4 @@ if [ -n "$USER" ]; then
 fi
 
 # do nothing forever, so container keeps running
-sleep inf
+jupyter notebook --ip=0.0.0.0 --no-browser
