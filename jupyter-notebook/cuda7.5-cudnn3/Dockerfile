@@ -2,7 +2,7 @@
 # Another Docker container should inherit with `FROM jupyter/notebook`
 # to run actual services.
 
-FROM wielandbrendel/ldab-xserver:cuda7.5-cudnn3
+FROM wielandbrendel/ldap-xserver:cuda7.5-cudnn3
 
 MAINTAINER Project Jupyter <jupyter@googlegroups.com>
 
