@@ -1,6 +1,43 @@
 FROM nvidia/cuda:7.5-cudnn3-devel 
 MAINTAINER Wieland Brendel "wieland.brendel@bethgelab.org" 
 
+# Copied from Jupyter/Notebook because packages cannot be removed once the
+# requirements for the Xserver are installed
+#
+# Remove preinstalled copy of python that blocks our ability to install development python.
+RUN DEBIAN_FRONTEND=noninteractive apt-get remove -yq \
+        python3-minimal \
+        python3.4 \
+        python3.4-minimal \
+        libpython3-stdlib \
+        libpython3.4-stdlib \
+        libpython3.4-minimal
+
+# Python binary and source dependencies
+RUN apt-get update -qq && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        git \
+        language-pack-en \
+        libcurl4-openssl-dev \
+        libffi-dev \
+        libsqlite3-dev \
+        libzmq3-dev \
+        pandoc \
+        python \
+        python3 \
+        python-dev \
+        python3-dev \
+        sqlite3 \
+        texlive-fonts-recommended \
+        texlive-latex-base \
+        texlive-latex-extra \
+        zlib1g-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install X11, SSH and sudo
 RUN apt-get update -y
 RUN apt-get upgrade -y
