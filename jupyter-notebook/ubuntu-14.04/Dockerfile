@@ -102,4 +102,6 @@ WORKDIR /notebooks
 EXPOSE 8888
 
 ENTRYPOINT ["tini", "--"]
-CMD ["jupyter", "notebook"]
+
+COPY run /usr/local/bin/run
+CMD run
