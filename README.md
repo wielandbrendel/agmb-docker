@@ -1,6 +1,6 @@
 # Docker Toolchain of AG Bethge
 
-This repository includes utilities to build and run Docker images in the group of [AG Bethge](http://bethgelab.org/). The toolchain is composed of four different imagesL
+This repository includes utilities to build and run Docker images in the group of [AG Bethge](http://bethgelab.org/). The toolchain is composed of four different images:
 
 * The __ldap-xserver image__ adds a user-authentication system and Xserver capabilities to a base Ubuntu-image. Without user accounts all files written from within the Docker container back to the host system are owned by root and thus conflict with user permissions.
 
