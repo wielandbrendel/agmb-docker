@@ -10,7 +10,7 @@ This repository includes utilities to build and run Docker images in the group o
 
 * The __jupyter-deeplearning image__ is based on jupyter-scipyserver but adds some libraries such as Lasagne, Scikit-image, Joblib and others. 
 
-All images come in with different (or no) CUDA-libraries installed. Currently we support plain Ubuntu 14.04, Ubuntu 14.04 + Cuda 6.5 or Ubuntu 14.04 + Cuda 7.0 + CuDNN v3. For detailed instructions on how to build and run each of the images, please refer to the respective subfolders.
+All images come with different (or no) CUDA-libraries installed. Currently we support plain Ubuntu 14.04, Ubuntu 14.04 + Cuda 6.5 or Ubuntu 14.04 + Cuda 7.0 + CuDNN v3. For detailed instructions on how to build and run each of the images, please refer to the respective subfolders.
 
 ### NVIDIA Docker wrapper
 
