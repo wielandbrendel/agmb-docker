@@ -1,4 +1,4 @@
-FROM nvidia/cuda:7.5-cudnn3-devel 
+FROM nvidia/cuda:7.0-cudnn3-devel 
 MAINTAINER Wieland Brendel "wieland.brendel@bethgelab.org" 
 
 # Copied from Jupyter/Notebook because packages cannot be removed once the
