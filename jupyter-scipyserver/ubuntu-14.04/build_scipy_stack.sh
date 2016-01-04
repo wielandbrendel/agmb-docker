@@ -22,7 +22,6 @@ ldconfig
 
 # System dependencies
 apt-get build-dep -y python3 python3-numpy python3-scipy python3-matplotlib cython3 python3-h5py
-apt-get install -y build-essential python3-dev
 
 git clone -q https://github.com/numpy/numpy.git
 cp /tmp/numpy-site.cfg numpy/site.cfg
