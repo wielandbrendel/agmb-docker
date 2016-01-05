@@ -1,4 +1,4 @@
-FROM wielandbrendel/jupyter-notebook:ubuntu-14.04
+FROM wielandbrendel/jupyter-notebook-python2:ubuntu-14.04
 
 MAINTAINER Wieland Brendel <wieland.brendel@posteo.de>
 

@@ -1,4 +1,4 @@
-FROM wielandbrendel/jupyter-notebook:cuda7.0-cudnn3
+FROM wielandbrendel/jupyter-notebook-python2:cuda7.0-cudnn3
 
 MAINTAINER Wieland Brendel <wieland.brendel@posteo.de>
 
