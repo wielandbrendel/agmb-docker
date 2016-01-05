@@ -6,8 +6,7 @@ set -xe
 mkdir /tmp/build
 cd /tmp/build
 
-apt-get -y update
-apt-get -y install git-core build-essential gfortran python3-dev curl
+apt-get -y install gfortran
 
 # Build latest stable release from OpenBLAS from source
 git clone -q --branch=master https://github.com/xianyi/OpenBLAS.git
@@ -32,28 +31,26 @@ cp /tmp/scipy-site.cfg scipy/site.cfg
 curl https://bootstrap.pypa.io/get-pip.py | python2
 curl https://bootstrap.pypa.io/get-pip.py | python3
 
-for PYTHONVER in 2 3 ; do
-  PYTHON="python$PYTHONVER"
-  PIP="pip$PYTHONVER"
+PYTHON="python3"
+PIP="pip3"
 
-  $PIP install --upgrade cython
+$PIP install --upgrade cython
 
-  # Build NumPy and SciPy from source against OpenBLAS installed
-  (cd numpy && $PIP install .)
-  (cd scipy && $PIP install .)
+# Build NumPy and SciPy from source against OpenBLAS installed
+(cd numpy && $PIP install .)
+(cd scipy && $PIP install .)
   
-  # The rest of the SciPy Stack
-  $PIP install pandas scikit-learn
-  $PIP install matplotlib
-  $PIP install seaborn
-  $PIP install h5py
-  $PIP install yt
-  $PIP install sympy
-  $PIP install patsy
-  $PIP install ggplot
-  $PIP install statsmodels
-  $PIP install git+https://github.com/Theano/Theano.git 
-done
+# The rest of the SciPy Stack
+$PIP install pandas scikit-learn
+$PIP install matplotlib
+$PIP install seaborn
+$PIP install h5py
+$PIP install yt
+$PIP install sympy
+$PIP install patsy
+$PIP install ggplot
+$PIP install statsmodels
+$PIP install git+https://github.com/Theano/Theano.git 
 
 # Reduce the image size
 apt-get autoremove -y

@@ -31,8 +31,8 @@ cp /tmp/scipy-site.cfg scipy/site.cfg
 curl https://bootstrap.pypa.io/get-pip.py | python2
 curl https://bootstrap.pypa.io/get-pip.py | python3
 
-PYTHON="python3"
-PIP="pip3"
+PYTHON="python2"
+PIP="pip2"
 
 $PIP install --upgrade cython
 
