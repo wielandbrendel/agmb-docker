@@ -6,8 +6,6 @@ set -xe
 mkdir /tmp/build
 cd /tmp/build
 
-apt-get -y install gfortran
-
 # Build latest stable release from OpenBLAS from source
 git clone -q --branch=master https://github.com/xianyi/OpenBLAS.git
 (cd OpenBLAS \

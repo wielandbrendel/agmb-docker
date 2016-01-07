@@ -6,6 +6,7 @@ set -xe
 mkdir /tmp/build
 cd /tmp/build
 
+apt-get -y update
 apt-get -y install gfortran
 
 # Build latest stable release from OpenBLAS from source
