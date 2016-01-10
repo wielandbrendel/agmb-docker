@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # System dependencies
-apt-get build-dep -y python3 python3-numpy python3-scipy python3-matplotlib cython3 python3-h5py
 curl https://bootstrap.pypa.io/get-pip.py | python3
 
 PYTHON="python3"

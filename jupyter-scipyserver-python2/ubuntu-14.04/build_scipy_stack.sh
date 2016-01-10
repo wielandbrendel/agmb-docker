@@ -26,6 +26,7 @@ cp /tmp/numpy-site.cfg numpy/site.cfg
 git clone -q https://github.com/scipy/scipy.git
 cp /tmp/scipy-site.cfg scipy/site.cfg
 
+apt-get build-dep -y python3 python3-numpy python3-scipy python3-matplotlib cython3 python3-h5py
 curl https://bootstrap.pypa.io/get-pip.py | python2
 
 PYTHON="python2"
