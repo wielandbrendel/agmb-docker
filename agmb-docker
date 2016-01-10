@@ -138,7 +138,7 @@ load_uvm()
 
 build_docker_args()
 {
-    local args="--device=$CTL_DEVICE --device=$UVM_DEVICE -e 'USER='$USER -e 'USER_ID='$UID -v /gpfs01/bethge/home/$USER:/gpfs01/bethge/home/$USER"
+    local args="--device=$CTL_DEVICE --device=$UVM_DEVICE"
 
     for gpu in $( echo $GPU | tr -s ", " " " ); do
         local minor="$( __nvsmi_query "Minor Number" $gpu )"
@@ -172,7 +172,6 @@ build_docker_args()
         fi
         args="$args -v $path:$NV_BINS_VOLUME/$bin"
     done
-
     NV_DOCKER_ARGS=$args
 }
 
@@ -220,4 +219,5 @@ case $CMD in
     ;;
 esac
 
+NV_DOCKER_ARGS="$NV_DOCKER_ARGS -e USER=$USER -e USER_ID=$UID"
 $DOCKER $DOCKER_ARGS $NV_DOCKER_ARGS $@
