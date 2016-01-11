@@ -6,20 +6,6 @@ set -xe
 mkdir /tmp/build
 cd /tmp/build
 
-apt-get -y update
-apt-get -y install gfortran
-
-# Build latest stable release from OpenBLAS from source
-git clone -q --branch=master https://github.com/xianyi/OpenBLAS.git
-(cd OpenBLAS \
-      && make DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32 \
-          && make install  DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32)
-
-# Rebuild ld cache, this assumes that:
-# /etc/ld.so.conf.d/openblas.conf was installed by Dockerfile
-# and that the libraries are in /opt/OpenBLAS/lib
-ldconfig
-
 git clone -q https://github.com/numpy/numpy.git
 cp /tmp/numpy-site.cfg numpy/site.cfg
 

@@ -41,7 +41,22 @@ RUN apt-get update -qq && \
 # Install X11, SSH and sudo
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install -y openssh-server pwgen xpra rox-filer xserver-xephyr xdm fluxbox xvfb sudo xterm
+RUN apt-get install -y openssh-server pwgen xpra rox-filer xserver-xephyr xdm fluxbox xvfb sudo xterm gfortran
+
+# Build latest stable release from OpenBLAS from source
+ADD openblas.conf /etc/ld.so.conf.d/openblas.conf
+RUN mkdir /tmp/build
+RUN cd /tmp/build
+
+RUN git clone -q --branch=master https://github.com/xianyi/OpenBLAS.git
+RUN (cd OpenBLAS \
+      && make DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32 \
+          && make install  DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32)
+
+# Rebuild ld cache, this assumes that:
+# /etc/ld.so.conf.d/openblas.conf was installed by Dockerfile
+# and that the libraries are in /opt/OpenBLAS/lib
+RUN ldconfig
 
 # Configuring xdm to allow connections from any IP address and ssh to allow X11 Forwarding. 
 RUN sed -i 's/DisplayManager.requestPort/!DisplayManager.requestPort/g' /etc/X11/xdm/xdm-config
