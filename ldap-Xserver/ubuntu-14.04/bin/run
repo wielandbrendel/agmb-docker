@@ -10,7 +10,7 @@ if [ -n "$USER" ]; then
    fi
 
    if [ -n "$USER_ENCRYPTED_PASSWORD" ]; then
-      useradd -M -d $USER_HOME -p $USER_ENCRYPYTED_PASSWORD $USER
+      useradd -M -d $USER_HOME -p $USER_ENCRYPTED_PASSWORD $USER
    else
       useradd -M -d $USER_HOME $USER
    fi
@@ -24,4 +24,4 @@ if [ -n "$USER" ]; then
 fi
 
 # do nothing forever, so container keeps running
-sleep inf
+/bin/bash
