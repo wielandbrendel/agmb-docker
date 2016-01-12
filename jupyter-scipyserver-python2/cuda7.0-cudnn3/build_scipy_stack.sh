@@ -3,7 +3,6 @@
 # Build OpenBLAS and clean up build dependencies
 set -xe
 
-mkdir /tmp/build
 cd /tmp/build
 
 git clone -q https://github.com/numpy/numpy.git
