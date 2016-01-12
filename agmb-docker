@@ -218,6 +218,17 @@ case $CMD in
         fi
     ;;
 esac
+_PW='pw'
 
-NV_DOCKER_ARGS="$NV_DOCKER_ARGS -e USER=$USER -e USER_ID=$UID"
+if [ -z "$USER_ENCRYPTED_PASSWORD" ]
+then
+    echo "Setting password to '$_PW'"
+    USER_ENCRYPTED_PASSWORD=`perl -e 'print crypt('"$_PW"', "aa"),"\n"'`
+else
+    echo "Not setting password since USER_ENCRYPTED_PASSWORD is set"
+fi
+echo "using encrypted password $USER_ENCRYPTED_PASSWORD"
+
+NV_DOCKER_ARGS="$NV_DOCKER_ARGS -v $HOME:$HOME -e USER=$USER -e USER_ID=$UID -e USER_ENCRYPTED_PASSWORD=$USER_ENCRYPTED_PASSWORD"
+
 $DOCKER $DOCKER_ARGS $NV_DOCKER_ARGS $@
