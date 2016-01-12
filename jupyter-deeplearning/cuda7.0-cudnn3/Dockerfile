@@ -79,7 +79,6 @@ RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive
 RUN git config --global url.https://github.com/.insteadOf git://github.com/
 RUN cd ~/torch && ./install.sh
-RUN git config --unset --global url.https://github.com/.insteadOf
 
 # Install loadcaffe
 RUN CC="gcc-4.8" CXX="g++-4.8" /root/torch/install/bin/luarocks install loadcaffe
