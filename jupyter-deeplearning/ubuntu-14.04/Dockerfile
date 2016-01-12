@@ -48,3 +48,38 @@ RUN sudo rm -r /usr/lib/python2.7/dist-packages/tornado/
 
 ADD requirements.txt /tmp/requirements.txt
 RUN pip2 install -r /tmp/requirements.txt
+
+# Install Torch
+# -------------
+
+# Install Torch dependencies not installed in base image or above
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  libreadline-dev \
+  git-core \
+  libqt4-core \
+  libqt4-gui \
+  libqt4-dev \
+  libjpeg-dev \
+  libpng-dev \
+  ncurses-dev \
+  libzmq3-dev \
+  libfftw3-dev \
+  imagemagick \
+  libgraphicsmagick1-dev \
+  gnuplot \
+  gnuplot-x11 \
+  libsdl2-dev \
+  sox \
+  libsox-dev \
+  libsox-fmt-all \
+  libssl-dev \
+  python-zmq
+
+# Install Torch
+RUN git clone https://github.com/torch/distro.git ~/torch --recursive
+RUN git config --global url.https://github.com/.insteadOf git://github.com/
+RUN cd ~/torch && ./install.sh
+
+# Install loadcaffe
+RUN CC="gcc-4.8" CXX="g++-4.8" /root/torch/install/bin/luarocks install loadcaffe
+
