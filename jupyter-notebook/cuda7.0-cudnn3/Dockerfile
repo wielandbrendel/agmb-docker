@@ -2,7 +2,7 @@
 # Another Docker container should inherit with `FROM jupyter/notebook`
 # to run actual services.
 
-FROM ubuntu:14.04
+FROM wielandbrendel/ldap-xserver:cuda7.0-cudnn3
 
 MAINTAINER Project Jupyter <jupyter@googlegroups.com>
 
@@ -12,40 +12,6 @@ ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV PYTHONIOENCODING UTF-8
-
-# Remove preinstalled copy of python that blocks our ability to install development python.
-RUN DEBIAN_FRONTEND=noninteractive apt-get remove -yq \
-        python3-minimal \
-        python3.4 \
-        python3.4-minimal \
-        libpython3-stdlib \
-        libpython3.4-stdlib \
-        libpython3.4-minimal
-
-# Python binary and source dependencies
-RUN apt-get update -qq && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        curl \
-        git \
-        language-pack-en \
-        libcurl4-openssl-dev \
-        libffi-dev \
-        libsqlite3-dev \
-        libzmq3-dev \
-        pandoc \
-        python \
-        python3 \
-        python-dev \
-        python3-dev \
-        sqlite3 \
-        texlive-fonts-recommended \
-        texlive-latex-base \
-        texlive-latex-extra \
-        zlib1g-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
 # Install Tini
 RUN curl -L https://github.com/krallin/tini/releases/download/v0.6.0/tini > tini && \
