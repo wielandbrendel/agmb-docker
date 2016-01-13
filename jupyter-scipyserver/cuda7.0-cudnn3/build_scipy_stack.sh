@@ -3,6 +3,8 @@
 # System dependencies
 curl https://bootstrap.pypa.io/get-pip.py | python3
 
+cd /tmp/build
+
 PYTHON="python3"
 PIP="pip3"
 
