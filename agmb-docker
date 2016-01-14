@@ -200,13 +200,41 @@ setup()
 check_prerequisites
 parse_docker_args "$*"; ret=$?
 
-DOCKER_ARGS=""
+USER_ARGS=""
 CMD="$( eval echo \$$ret )"
 
 i=0; while [ $i -lt $ret ]; do
-    DOCKER_ARGS="$DOCKER_ARGS $1"
+    if [[ $1 == "-p" ]] || [[ $1 == "-d" ]]
+    then
+       if [[ $2 == "USER_GROUPS"* ]]
+       then
+          USER_GROUPS=${2#*=}
+       elif [[ $2 == "USER_ENCRYPTED_PASSWORD"* ]]
+       then
+          USER_ENCRYPTED_PASSWORD=${2#*=}
+       elif [[ $2 == "USER="* ]]
+       then
+          USER_NAME=${2#*=}
+       elif [[ $2 == "USER_ID"* ]]
+       then
+          USER_ID=${2#*=}
+       elif [[ $2 == *":22" ]]
+       then
+          SSHPORT=${2%:*}
+       elif [[ $2 == *":8888" ]]
+       then
+          JUPYTERPORT=${2%:*}
+       else
+          USER_ARGS="$USER_ARGS $1 $2"
+       fi
+
+       shift
+       shift
+    else
+       USER_ARGS="$USER_ARGS $1"
+       shift
+    fi
     i=$((i+1))
-    shift
 done
 
 case $CMD in
@@ -218,17 +246,74 @@ case $CMD in
         fi
     ;;
 esac
-_PW='pw'
+
+if [ -z "$USER_GROUPS" ] ; then
+    USER_GROUPS="bethgelab:1019,cin:1011"
+fi
+
+if [ -z "$USER_NAME" ] ; then
+    USER_NAME=$USER
+fi
+
+if [ -z "$USER_ID" ] ; then
+    USER_ID=$UID
+fi
+
+echo
+echo "* Setting user name to:             $USER_NAME"
+echo "* Setting user ID to:               $USER_ID"
+echo "* Setting user groups to:           $USER_GROUPS"
 
 if [ -z "$USER_ENCRYPTED_PASSWORD" ]
-then
-    echo "Setting password to '$_PW'"
-    USER_ENCRYPTED_PASSWORD=`perl -e 'print crypt('"$_PW"', "aa"),"\n"'`
+    then
+        _PW="pw"
+        echo "* Setting password to:              $_PW"
+        USER_ENCRYPTED_PASSWORD=`perl -e 'print crypt('"$_PW"', "aa"),"\n"'`
 else
-    echo "Not setting password since USER_ENCRYPTED_PASSWORD is set"
+    echo "* Setting user-defined password:    $USER_ENCRYPTED_PASSWORD"
 fi
-echo "using encrypted password $USER_ENCRYPTED_PASSWORD"
 
-NV_DOCKER_ARGS="$NV_DOCKER_ARGS -v $HOME:$HOME -e USER=$USER -e USER_ID=$UID -e USER_ENCRYPTED_PASSWORD=$USER_ENCRYPTED_PASSWORD"
+# find an open port to bind SSH and JUPYTER-NOTEBOOK
+#!/bin/bash
+if [ -z "$SSHPORT" ] ; then
+    read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range
+    while :
+    do
+        SSHPORT="`shuf -i $LOWERPORT-$UPPERPORT -n 1`"
+        ss -lpn | grep -q ":$SSHPORT " || break
+    done
+fi
 
-$DOCKER $DOCKER_ARGS $NV_DOCKER_ARGS $@
+echo "* Setting SSH port binding to:      $SSHPORT (to set manually add -p $SSHPORT:22 as flag)"
+
+if [ -z "$JUPYTERPORT" ] ; then
+    while :
+    do
+       JUPYTERPORT="`shuf -i 600-700 -n 1`"
+       ss -lpn | grep -q ":$JUPYTERPORT " || break
+    done
+fi
+
+echo "* Setting Notebook port binding to: $JUPYTERPORT (to set manually add -p $JUPYTERPORT:8888 as flag)"
+echo 
+echo "You can now open the notebook on the host machine by directing your browser to"
+echo
+echo "    http://localhost:$JUPYTERPORT"
+echo
+echo "or, from a remote system, to"
+echo 
+ip=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
+echo "    http://$ip:$JUPYTERPORT"
+echo
+echo "In the latter case make sure that your local machine can see the server! Otherwise you might have to configure an SSH tunnel first."
+echo 
+
+if [ -z "$USER_HOME" ] ; then
+   USER_HOME=/gpfs01/bethge/home/$USER_NAME
+fi
+
+NV_DOCKER_ARGS="$NV_DOCKER_ARGS -v $USER_HOME:$USER_HOME -p $SSHPORT:22 -p $JUPYTERPORT:8888 -e USER_GROUPS=$USER_GROUPS -e USER=$USER_NAME -e USER_ID=$USER_ID -e USER_ENCRYPTED_PASSWORD=$USER_ENCRYPTED_PASSWORD -e USER_HOME=$USER_HOME"
+
+echo $DOCKER $NV_DOCKER_ARGS $USER_ARGS
+
+$DOCKER "run" $NV_DOCKER_ARGS $USER_ARGS

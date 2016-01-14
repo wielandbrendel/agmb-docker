@@ -13,6 +13,9 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV PYTHONIOENCODING UTF-8
 
+# replace git with https protocol
+RUN git config --global url.https://github.com/.insteadOf git://github.com/
+
 # Install Tini
 RUN curl -L https://github.com/krallin/tini/releases/download/v0.6.0/tini > tini && \
     echo "d5ed732199c36a1189320e6c4859f0169e950692f451c03e7854243b95f4234b *tini" | sha256sum -c - && \
@@ -35,7 +38,9 @@ RUN pip2 --no-cache-dir install ipykernel && \
     python3 -m ipykernel.kernelspec
 
 # Move notebook contents into place.
-ADD . /usr/src/jupyter-notebook
+# ADD . /usr/src/jupyter-notebook
+RUN cd /usr/src/ && git clone https://github.com/jupyter/notebook.git
+RUN mv /usr/src/notebook /usr/src/jupyter-notebook
 
 # Install dependencies and run tests.
 RUN BUILD_DEPS="nodejs-legacy npm" && \
@@ -62,12 +67,14 @@ RUN pip2 install --no-cache-dir mock nose requests testpath && \
 RUN mkdir -p -m 700 /root/.jupyter/ && \
     echo "c.NotebookApp.ip = '*'" >> /root/.jupyter/jupyter_notebook_config.py
 
-VOLUME /notebooks
-WORKDIR /notebooks
+WORKDIR $HOME 
 
 EXPOSE 8888
 
 ENTRYPOINT ["tini", "--"]
 
-COPY run /usr/local/bin/run
-CMD run
+RUN echo "echo \$USER \$USER_NAME \$USER_HOME" >> /usr/local/bin/run
+RUN echo "lastUser=\$(tail -1 /etc/passwd | cut -d: -f1)" >> /usr/local/bin/run
+RUN echo "'last user' \$lastUser"
+RUN echo "su -c 'jupyter notebook --ip=0.0.0.0 --no-browser --notebook-dir=\$USER_HOME' \$lastUser" >> /usr/local/bin/run
+CMD bash -C '/usr/local/bin/run' 

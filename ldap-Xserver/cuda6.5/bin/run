@@ -6,22 +6,33 @@ startup
 # Create user account
 if [ -n "$USER" ]; then
    if [ -z "$USER_HOME" ]; then
-      export USER_HOME=/gpfs01/bethge/home/$USER
+      export USER_HOME=/home/$USER
    fi
+
+   if [ -z "$USER_ID" ]; then
+      export USER_ID=99
+   fi
+
 
    if [ -n "$USER_ENCRYPTED_PASSWORD" ]; then
-      useradd -M -d $USER_HOME -p $USER_ENCRYPTED_PASSWORD $USER
+      useradd -M -d $USER_HOME -p $USER_ENCRYPTED_PASSWORD -u $USER_ID $USER > /dev/null
    else
-      useradd -M -d $USER_HOME $USER
+      useradd -M -d $USER_HOME -u $USER_ID $USER > /dev/null
    fi
-
-   usermod -u $USER_ID $USER
-   adduser $USER sudo
-   adduser $USER bethgelab
-   adduser $USER cin
-   chsh -s /bin/bash $USER
-   su $USER
+   
+   # expects a comma-separated string of the form GROUP1:GROUP1ID,GROUP2,GROUP3:GROUP3ID,... 
+   # (the GROUPID is optional, but needs to be separated from the group name by a ':')
+   for i in $(echo $USER_GROUPS | sed "s/,/ /g")
+   do
+      if [[ $i == *":"* ]]
+      then
+	 addgroup ${i%:*} > /dev/null
+         groupmod -g ${i#*:} ${i%:*} > /dev/null
+         adduser $USER ${i%:*} > /dev/null
+      else
+         addgroup $i > /dev/null
+         adduser $USER $i > /dev/null
+      fi
+   done
+    
 fi
-
-# do nothing forever, so container keeps running
-/bin/bash

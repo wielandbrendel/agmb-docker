@@ -79,14 +79,8 @@ RUN mkdir /var/run/sshd
 # restarts the xdm service
 RUN /etc/init.d/xdm restart
 
-# Create groups
-RUN addgroup cin
-RUN groupmod -g 1011 cin
-RUN addgroup bethgelab
-RUN groupmod -g 1019 bethgelab
-
 # Copy the config files into the docker directory
 COPY bin/* /usr/local/bin/
 
 # Start the ssh service
-CMD run
+CMD bash -C '/usr/local/bin/run'
