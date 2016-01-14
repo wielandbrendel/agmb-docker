@@ -26,5 +26,6 @@ $PIP install ggplot
 $PIP install statsmodels
 $PIP install git+https://github.com/Theano/Theano.git 
 $PIP install git+https://github.com/Lasagne/Lasagne.git
+$PIP install git+https://github.com/bokeh/bokeh.git
 cd /
 rm -rf /tmp/build
