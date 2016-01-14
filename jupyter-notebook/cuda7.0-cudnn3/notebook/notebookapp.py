@@ -827,7 +827,8 @@ class NotebookApp(JupyterApp):
         )
         self.config_manager = self.config_manager_class(
             parent=self,
-            log=self.log
+            log=self.log,
+            config_dir=os.path.join(self.config_dir, 'nbconfig'),
         )
 
     def init_logging(self):
@@ -1095,7 +1096,7 @@ class NotebookApp(JupyterApp):
                 relpath = os.path.relpath(self.file_to_run, self.notebook_dir)
                 uri = url_escape(url_path_join('notebooks', *relpath.split(os.sep)))
             else:
-                uri = 'tree'
+                uri = self.default_url
             if browser:
                 b = lambda : browser.open(url_path_join(self.connection_url, uri),
                                           new=2)
