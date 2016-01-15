@@ -1,4 +1,4 @@
-from wielandbrendel/jupyter-scipyserver:cuda7.0-cudnn3
+FROM wielandbrendel/jupyter-scipyserver:cuda7.0-cudnn3
 
 # Install wget and build-essential
 RUN apt-get update && apt-get install -y \
@@ -52,33 +52,31 @@ RUN pip2 install -r /tmp/requirements.txt
 # Install Torch
 # -------------
 
-# Install Torch dependencies not installed in base image or above
 RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-  libreadline-dev \
-  git-core \
-  libqt4-core \
-  libqt4-gui \
-  libqt4-dev \
-  libjpeg-dev \
-  libpng-dev \
-  ncurses-dev \
-  libzmq3-dev \
-  libfftw3-dev \
-  imagemagick \
-  libgraphicsmagick1-dev \
-  gnuplot \
-  gnuplot-x11 \
-  libsdl2-dev \
-  sox \
-  libsox-dev \
-  libsox-fmt-all \
-  libssl-dev \
-  python-zmq
+  wget
 
-# Install Torch
-RUN git clone https://github.com/torch/distro.git ~/torch --recursive
-RUN git config --global url.https://github.com/.insteadOf git://github.com/
-RUN cd ~/torch && ./install.sh
+RUN CUDA_REPO_PKG=cuda-repo-ubuntu1404_7.5-18_amd64.deb && \
+    wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/$CUDA_REPO_PKG && \
+    sudo dpkg -i $CUDA_REPO_PKG
+
+RUN ML_REPO_PKG=nvidia-machine-learning-repo_4.0-2_amd64.deb && \
+    wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1404/x86_64/$ML_REPO_PKG && \
+    sudo dpkg -i $ML_REPO_PKG
+
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  torch7-nv
+
+# Install iTorch
+# --------------
+
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  libzmq3-dev \
+  libssl-dev \
+  python-zmq \
+  cmake
+
+RUN git clone https://github.com/facebook/iTorch.git ~/itorch
+RUN cd ~/itorch && /root/torch/install/bin/luarocks make
 
 # Install loadcaffe
 RUN CC="gcc-4.8" CXX="g++-4.8" /root/torch/install/bin/luarocks install loadcaffe
