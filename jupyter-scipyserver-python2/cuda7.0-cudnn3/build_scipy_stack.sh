@@ -4,6 +4,7 @@
 set -xe
 
 cd /tmp/build
+git config --global url.https://github.com/.insteadOf git://github.com/
 
 git clone -q https://github.com/numpy/numpy.git
 cp /tmp/numpy-site.cfg numpy/site.cfg
@@ -36,6 +37,6 @@ $PIP install ggplot
 $PIP install statsmodels
 $PIP install git+https://github.com/Theano/Theano.git 
 $PIP install git+https://github.com/Lasagne/Lasagne.git
-$PIP install bokeh 
+$PIP install bokeh
 
 cd /
