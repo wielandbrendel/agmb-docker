@@ -47,5 +47,10 @@ RUN git clone https://github.com/facebook/iTorch.git ~/itorch
 RUN cd ~/itorch && luarocks make
 
 # Install loadcaffe
-RUN CC="gcc-4.8" CXX="g++-4.8" luarocks install loadcaffe
+# -----------------
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  libprotobuf-dev \
+  protobuf-compiler
+
+RUN luarocks install loadcaffe
 
