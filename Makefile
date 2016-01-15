@@ -1,14 +1,66 @@
-update-notebook: update-notebook-ubuntu update-notebook-cuda6 update-notebook-cuda7
+# only the following tag is built if not stated otherwise
+basetag=cuda7.0-cudnn3
+alltags=ubuntu-14.04 cuda6.5 cuda7.0-cudnn3
+ldapbaseimages=ubuntu:14.04 nvidia/cuda:6.5-devel nvidia/cuda:7.0-cudnn3-devel
 
-update-notebook-ubuntu:
-	git subtree pull --prefix jupyter-notebook/ubuntu-14.04 jupyter_notebook_remote master --squash
+build-all:
+	docker build -t wielandbrendel/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
+	docker build -t wielandbrendel/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
+	docker build -t wielandbrendel/jupyter-scipyserver-python2:$(basetag) jupyter-scipyserver-python2/$(basetag)/
+	docker build -t wielandbrendel/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
 
-update-notebook-cuda6:
-	git subtree pull --prefix jupyter-notebook/cuda6.5 jupyter_notebook_remote master --squash
+# opens the Dockerfile in vim and syncs across tags after closing
+docker-deeplearning: 
+	make docker-image image=jupyter-deeplearning baseimage=jupyter-scipyserver
 
-update-notebook-cuda7:
-	git subtree pull --prefix jupyter-notebook/cuda7.0-cudnn3 jupyter_notebook_remote master --squash
+# opens any file (use file=... as argument) in vim and syncs across tags after closing
+vim-deeplearning: 
+	make vim-image image=jupyter-deeplearning
 
-# To add new tags based on jupyter notebook use
-# git subtree add --prefix notebook jupyter_notebook_remote master --squash
-# (details in our wiki)
+docker-scipyserver: 
+	make docker-image image=jupyter-scipyserver baseimage=jupyter-scipyserver-python2
+
+vim-scipyserver: 
+	make vim-image image=jupyter-scipyserver
+
+docker-scipyserver2: 
+	make docker-image image=jupyter-scipyserver-python2 baseimage=jupyter-notebook
+
+vim-scipyserver2: 
+	make vim-image image=jupyter-scipyserver-python2
+
+docker-notebook:
+	make docker-image image=jupyter-notebook baseimage=ldap-xserver
+
+vim-notebook: 
+	make vim-image image=jupyter-notebook
+
+docker-ldap:
+	make vim-image image=ldap-Xserver file=Dockerfile
+	python set_ldap_baseimages.py '$(alltags)' '$(ldapbaseimages)'
+
+vim-ldap:
+	make vim-image image=ldap-xserver
+
+# opens file and syncs across tags
+vim-image:
+	vim $(image)/$(basetag)/$(file)
+	make sync-file image=$(image) file=$(file)
+
+# opens Dockerfile, syncs across tags and replaces first line
+docker-image:
+	vim $(image)/$(basetag)/Dockerfile
+	make sync-file image=$(image) file=Dockerfile
+	make setbase-dockerfile image=$(image) baseimage=$(baseimage)
+
+# sync a file from basetag directory to all other tags
+sync-file:
+	for tag in $(alltags) ; do \
+           cp $(image)/$(basetag)/$(file) $(image)/$$tag/$(file)  2>/dev/null || : ; \
+        done
+
+# set the correct base images for all tags
+setbase-dockerfile:
+	for tag in $(alltags) ; do \
+           sed -i '1 s%^.*%FROM wielandbrendel/$(baseimage):'$$tag'%' $(image)/$$tag/Dockerfile ; \
+        done
