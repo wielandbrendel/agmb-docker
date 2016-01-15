@@ -1,4 +1,7 @@
 FROM nvidia/cuda:6.5-devel
+
+MAINTAINER Wieland Brendel <wieland.brendel@posteo.de>
+
 # Copied from Jupyter/Notebook because packages cannot be removed once the
 # requirements for the Xserver are installed
 #

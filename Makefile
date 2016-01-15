@@ -37,7 +37,7 @@ vim-notebook:
 
 docker-ldap:
 	make vim-image image=ldap-Xserver file=Dockerfile
-	python set_ldap_baseimages.py '$(alltags)' '$(ldapbaseimages)'
+	python utils/set_ldap_baseimages.py '$(alltags)' '$(ldapbaseimages)'
 
 vim-ldap:
 	make vim-image image=ldap-xserver

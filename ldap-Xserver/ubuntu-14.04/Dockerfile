@@ -1,4 +1,7 @@
 FROM ubuntu:14.04
+
+MAINTAINER Wieland Brendel <wieland.brendel@posteo.de>
+
 # Copied from Jupyter/Notebook because packages cannot be removed once the
 # requirements for the Xserver are installed
 #

@@ -1,7 +1,3 @@
-# Installs Jupyter Notebook and IPython kernel from the current branch
-# Another Docker container should inherit with `FROM jupyter/notebook`
-# to run actual services.
-
 FROM wielandbrendel/ldap-xserver:ubuntu-14.04
 
 MAINTAINER Project Jupyter <jupyter@googlegroups.com>
