@@ -28,3 +28,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends --force-yes \
 ADD requirements.txt /tmp/requirements.txt
 RUN pip2 install -r /tmp/requirements.txt
 
+# Install Torch
+# -------------
+
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  torch7-nv
+
+# Install iTorch
+# --------------
+
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+  libzmq3-dev \
+  libssl-dev \
+  python-zmq \
+  cmake
+
+RUN git clone https://github.com/facebook/iTorch.git ~/itorch
+RUN cd ~/itorch && luarocks make
+
+# Install loadcaffe
+RUN CC="gcc-4.8" CXX="g++-4.8" luarocks install loadcaffe
+
