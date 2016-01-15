@@ -1,4 +1,4 @@
-from wielandbrendel/jupyter-scipyserver-python2:cuda6.5
+FROM wielandbrendel/jupyter-scipyserver-python2:cuda6.5
 
 MAINTAINER Wieland Brendel <wieland.brendel@posteo.de>
 
