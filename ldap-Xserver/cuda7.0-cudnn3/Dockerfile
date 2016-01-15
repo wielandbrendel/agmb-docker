@@ -18,6 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get remove -yq \
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
         vim \
+	wget \
 	build-essential \
         ca-certificates \
         curl \
