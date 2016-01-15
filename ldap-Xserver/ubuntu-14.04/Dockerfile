@@ -1,6 +1,4 @@
-FROM ubuntu:14.04 
-MAINTAINER Wieland Brendel "wieland.brendel@bethgelab.org" 
-
+FROM ubuntu:14.04
 # Copied from Jupyter/Notebook because packages cannot be removed once the
 # requirements for the Xserver are installed
 #
@@ -16,7 +14,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get remove -yq \
 # Python binary and source dependencies
 RUN apt-get update -qq && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-        build-essential \
+        vim \
+	build-essential \
         ca-certificates \
         curl \
         git \
