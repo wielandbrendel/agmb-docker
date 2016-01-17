@@ -203,6 +203,9 @@ parse_docker_args "$*"; ret=$?
 USER_ARGS=""
 CMD="$( eval echo \$$ret )"
 
+# quick fix to adjust for a command AFTER the image (previously ignored)
+ret=$(($ret + 1))
+
 i=0; while [ $i -lt $ret ]; do
     if [[ $1 == "-p" ]] || [[ $1 == "-d" ]]
     then
@@ -248,7 +251,7 @@ case $CMD in
 esac
 
 if [ -z "$USER_GROUPS" ] ; then
-    USER_GROUPS="bethgelab:1019,cin:1011"
+    USER_GROUPS="bethgelab:1019,cin:1011,sudo"
 fi
 
 if [ -z "$USER_NAME" ] ; then
@@ -314,6 +317,7 @@ fi
 
 NV_DOCKER_ARGS="$NV_DOCKER_ARGS -v $USER_HOME:$USER_HOME -p $SSHPORT:22 -p $JUPYTERPORT:8888 -e USER_GROUPS=$USER_GROUPS -e USER=$USER_NAME -e USER_ID=$USER_ID -e USER_ENCRYPTED_PASSWORD=$USER_ENCRYPTED_PASSWORD -e USER_HOME=$USER_HOME"
 
+echo $USER_ARGS
 echo $DOCKER $NV_DOCKER_ARGS $USER_ARGS
 
 $DOCKER "run" $NV_DOCKER_ARGS $USER_ARGS

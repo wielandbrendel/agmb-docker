@@ -10,6 +10,28 @@ build-all:
 	docker build -t wielandbrendel/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
 	docker build -t wielandbrendel/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
 
+build-ldap:
+	docker build -t wielandbrendel/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
+
+trouble-ldap:
+	GPU=0,1 ./agmb-docker -it wielandbrendel/ldap-xserver:$(basetag)
+
+run-ldap:
+	GPU=0,1 ./agmb-docker -d wielandbrendel/ldap-xserver:$(basetag)
+
+docker-ldap:
+	make vim-image image=ldap-Xserver file=Dockerfile
+	python utils/set_ldap_baseimages.py '$(alltags)' '$(ldapbaseimages)'
+
+vim-ldap:
+	make vim-image image=ldap-Xserver
+
+build-notebook:
+	docker build -t wielandbrendel/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
+
+run-notebook:
+	GPU=0,1 ./agmb-docker -d wielandbrendel/jupyter-notebook:$(basetag)
+
 # opens the Dockerfile in vim and syncs across tags after closing
 docker-deeplearning: 
 	make docker-image image=jupyter-deeplearning baseimage=jupyter-scipyserver
@@ -41,7 +63,7 @@ docker-ldap:
 	python utils/set_ldap_baseimages.py '$(alltags)' '$(ldapbaseimages)'
 
 vim-ldap:
-	make vim-image image=ldap-xserver
+	make vim-image image=ldap-Xserver
 
 # opens file and syncs across tags
 vim-image:
