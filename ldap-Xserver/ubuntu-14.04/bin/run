@@ -49,5 +49,3 @@ if [ -n "$USER" ]; then
    fi
     
 fi
-
-sleep inf
