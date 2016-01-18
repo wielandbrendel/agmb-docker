@@ -3,7 +3,8 @@
 # Start running porgrams and services
 startup
 
-echo "Test on startup" $USER $USER_GROUPS
+# Set correct environmental variable
+sed -i '1 s%^.*%PATH="/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"%' /etc/environment
 
 # Create user account
 if [ -n "$USER" ]; then
@@ -47,5 +48,5 @@ if [ -n "$USER" ]; then
          usermod -g $group $USER &
       fi
    fi
-    
+
 fi
