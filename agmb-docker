@@ -202,12 +202,9 @@ parse_docker_args "$*"; ret=$?
 
 USER_ARGS=""
 CMD="$( eval echo \$$ret )"
-
-# quick fix to adjust for a command AFTER the image (previously ignored)
-ret=$(($ret + 1))
-
-i=0; while [ $i -lt $ret ]; do
-    if [[ $1 == "-p" ]] || [[ $1 == "-d" ]]
+nargs=$(echo "$*" | wc -w)
+i=0; while [ $i -lt $nargs ]; do
+    if [[ $1 == "-p" ]] || [[ $1 == "-e" ]]
     then
        if [[ $2 == "USER_GROUPS"* ]]
        then
@@ -233,20 +230,31 @@ i=0; while [ $i -lt $ret ]; do
 
        shift
        shift
+       i=$((i+2))
+    elif [[ $1 == $CMD ]]
+    then
+        shift
+        i=$((i+1))
     else
        USER_ARGS="$USER_ARGS $1"
        shift
+       i=$((i+1))
     fi
-    i=$((i+1))
 done
 
 case $CMD in
     run|create)
-        parse_docker_args "$*" $CMD; ret=$?
-        if [ $ret -gt 0 ]; then
-            image="$( eval echo \$$ret )"
-            setup $image
-        fi
+        image=${USER_ARGS##* }
+        setup $image 
+        #echo "in CMD"
+        #parse_docker_args "$*" $CMD; ret=$?
+        #image="$( eval echo \$$ret )"
+        #echo $image $ret
+        #setup "wielandbrendel/jupyter-scipyserver:cuda7.0-cudnn3"
+        #if [ $ret -gt 0 ]; then
+        #    image="$( eval echo \$$ret )"
+        #    setup $image
+        #fi
     ;;
 esac
 
@@ -317,7 +325,6 @@ fi
 
 NV_DOCKER_ARGS="$NV_DOCKER_ARGS -v $USER_HOME:$USER_HOME -p $SSHPORT:22 -p $JUPYTERPORT:8888 -e USER_GROUPS=$USER_GROUPS -e USER=$USER_NAME -e USER_ID=$USER_ID -e USER_ENCRYPTED_PASSWORD=$USER_ENCRYPTED_PASSWORD -e USER_HOME=$USER_HOME"
 
-echo $USER_ARGS
-echo $DOCKER $NV_DOCKER_ARGS $USER_ARGS
+# echo $DOCKER $CMD $NV_DOCKER_ARGS $(echo \$$USER_ARGS | cut -d " " -f2-)
 
-$DOCKER "run" $NV_DOCKER_ARGS $USER_ARGS
+$DOCKER $CMD $NV_DOCKER_ARGS $USER_ARGS
