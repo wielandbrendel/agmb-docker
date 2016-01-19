@@ -35,7 +35,7 @@ RUN pip2 --no-cache-dir install ipykernel && \
 
 # Move notebook contents into place.
 # ADD . /usr/src/jupyter-notebook
-RUN cd /usr/src/ && git clone --branch 4.0.0 https://github.com/jupyter/notebook.git
+RUN cd /usr/src/ && git clone --branch 4.1.0 https://github.com/jupyter/notebook.git
 RUN mv /usr/src/notebook /usr/src/jupyter-notebook
 
 # Install dependencies and run tests.
