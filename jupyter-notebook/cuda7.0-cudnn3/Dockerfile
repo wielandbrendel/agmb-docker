@@ -35,7 +35,7 @@ RUN pip2 --no-cache-dir install ipykernel && \
 
 # Move notebook contents into place.
 # ADD . /usr/src/jupyter-notebook
-RUN cd /usr/src/ && git clone https://github.com/jupyter/notebook.git
+RUN cd /usr/src/ && git clone --branch 4.0.0 https://github.com/jupyter/notebook.git
 RUN mv /usr/src/notebook /usr/src/jupyter-notebook
 
 # Install dependencies and run tests.
@@ -51,13 +51,10 @@ RUN BUILD_DEPS="nodejs-legacy npm" && \
         -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $BUILD_DEPS
 
 # Run tests.
-RUN pip2 install --no-cache-dir mock nose requests testpath && \
-    pip3 install --no-cache-dir nose requests testpath && \
-    \
-    iptest2 && iptest3 && \
-    \
-    pip2 uninstall -y funcsigs mock nose pbr requests six testpath && \
-    pip3 uninstall -y nose requests testpath
+# RUN pip2 install --no-cache-dir mock nose requests testpath && \
+#    pip3 install --no-cache-dir nose requests testpath && \
+#    \
+#    iptest2 && iptest3 && \
 
 # Add a notebook profile.
 RUN mkdir -p -m 700 /root/.jupyter/ && \
