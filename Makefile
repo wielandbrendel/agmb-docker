@@ -32,6 +32,14 @@ build-notebook:
 run-notebook:
 	GPU=0,1 ./agmb-docker -d wielandbrendel/jupyter-notebook:$(basetag)
 
+run-scipyserver:
+	# docker pull wielandbrendel/jupyter-scipyserver:$(basetag)
+	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-scipyserver:$(basetag)
+
+run-deeplearning:
+	docker pull wielandbrendel/jupyter-deeplearning:$(basetag)
+	GPU=0,1 ./agmb-docker -d wielandbrendel/jupyter-deeplearning:$(basetag)
+
 # opens the Dockerfile in vim and syncs across tags after closing
 docker-deeplearning: 
 	make docker-image image=jupyter-deeplearning baseimage=jupyter-scipyserver

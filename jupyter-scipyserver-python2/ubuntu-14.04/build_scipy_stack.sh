@@ -39,4 +39,8 @@ $PIP install git+https://github.com/Theano/Theano.git
 $PIP install git+https://github.com/Lasagne/Lasagne.git
 $PIP install bokeh
 
+# Install additional developer tools
+$PIP install mock
+$PIP install pytest
+$PIP install 
 cd /
