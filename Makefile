@@ -10,14 +10,17 @@ build-all:
 	docker build -t wielandbrendel/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
 	docker build -t wielandbrendel/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
 
+#
+# LDAP IMAGES
+# 
 build-ldap:
 	docker build -t wielandbrendel/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
 
 trouble-ldap:
-	GPU=0,1 ./agmb-docker -it wielandbrendel/ldap-xserver:$(basetag)
+	GPU=0,1 ./agmb-docker run -it wielandbrendel/ldap-xserver:$(basetag)
 
 run-ldap:
-	GPU=0,1 ./agmb-docker -d wielandbrendel/ldap-xserver:$(basetag)
+	GPU=0,1 ./agmb-docker run -d wielandbrendel/ldap-xserver:$(basetag)
 
 docker-ldap:
 	make vim-image image=ldap-Xserver file=Dockerfile
@@ -26,19 +29,31 @@ docker-ldap:
 vim-ldap:
 	make vim-image image=ldap-Xserver
 
+#
+# JUPYTER NOTEBOOK IMAGES
+# 
 build-notebook:
 	docker build -t wielandbrendel/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
 
 run-notebook:
-	GPU=0,1 ./agmb-docker -d wielandbrendel/jupyter-notebook:$(basetag)
+	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-notebook:$(basetag)
 
+docker-notebook:
+	make docker-image image=jupyter-notebook baseimage=ldap-xserver
+
+vim-notebook: 
+	make vim-image image=jupyter-notebook
+
+#
+# JUPYTER SCIPYSERVER
+#
 run-scipyserver:
 	# docker pull wielandbrendel/jupyter-scipyserver:$(basetag)
 	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-scipyserver:$(basetag)
 
 run-deeplearning:
-	docker pull wielandbrendel/jupyter-deeplearning:$(basetag)
-	GPU=0,1 ./agmb-docker -d wielandbrendel/jupyter-deeplearning:$(basetag)
+	# docker pull wielandbrendel/jupyter-deeplearning:$(basetag)
+	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-deeplearning:$(basetag)
 
 # opens the Dockerfile in vim and syncs across tags after closing
 docker-deeplearning: 
