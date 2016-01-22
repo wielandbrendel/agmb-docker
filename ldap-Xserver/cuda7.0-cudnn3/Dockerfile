@@ -11,15 +11,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get remove -yq \
         python3.4 \
         python3.4-minimal \
         libpython3-stdlib \
-        libpython3.4-stdlib \
-        libpython3.4-minimal
+        libpython3.4-minimal \
+        libpython3.4-stdlib
 
 # Python binary and source dependencies
-RUN apt-get update -qq && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-        vim \
-	wget \
-	build-essential \
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+        build-essential \
         ca-certificates \
         curl \
         git \
@@ -37,24 +34,38 @@ RUN apt-get update -qq && \
         texlive-fonts-recommended \
         texlive-latex-base \
         texlive-latex-extra \
-        zlib1g-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+        vim \
+        wget \
+        zlib1g-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install X11, SSH, sudo and gfortran
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install -y openssh-server pwgen xpra rox-filer xserver-xephyr xdm fluxbox xvfb sudo xterm gfortran
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+        fluxbox \
+        gfortran \
+        openssh-server \
+        pwgen \
+        rox-filer \
+        sudo \
+        xdm \
+        xpra \
+        xserver-xephyr \
+        xterm \
+        xvfb
 
 # Build latest stable release from OpenBLAS from source
 ADD openblas.conf /etc/ld.so.conf.d/openblas.conf
 RUN mkdir /tmp/build
-RUN cd /tmp/build
 
-RUN git clone -q --branch=master https://github.com/xianyi/OpenBLAS.git
-RUN (cd OpenBLAS \
-      && make DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32 \
-          && make install  DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32)
+RUN cd /tmp/build \
+    && git clone -q --branch=master https://github.com/xianyi/OpenBLAS.git
+
+RUN cd /tmp/build/OpenBLAS \
+    && make DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32 \
+    && make install DYNAMIC_ARCH=1 NO_AFFINITY=1 NUM_THREADS=32
+
+RUN rm -rf /tmp/build
 
 # Rebuild ld cache, this assumes that:
 # /etc/ld.so.conf.d/openblas.conf was installed by Dockerfile
