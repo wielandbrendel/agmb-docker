@@ -19,6 +19,8 @@ curl https://bootstrap.pypa.io/get-pip.py | python2
 PYTHON="python2"
 PIP="pip2"
 
+apt-get -y remove cython 
+# apt-get -y remove numpy
 $PIP install --upgrade cython
 
 # Build NumPy and SciPy from source against OpenBLAS installed

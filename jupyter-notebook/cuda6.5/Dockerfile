@@ -70,4 +70,4 @@ RUN echo "echo \$USER \$USER_NAME \$USER_HOME" >> /usr/local/bin/run
 RUN echo "lastUser=\$(tail -1 /etc/passwd | cut -d: -f1)" >> /usr/local/bin/run
 RUN echo "'last user' \$lastUser"
 RUN echo "su -c 'jupyter notebook --ip=0.0.0.0 --no-browser --notebook-dir=\$USER_HOME' \$lastUser" >> /usr/local/bin/run
-CMD bash -C '/usr/local/bin/run' 
+CMD bash -C '/usr/local/bin/run'
