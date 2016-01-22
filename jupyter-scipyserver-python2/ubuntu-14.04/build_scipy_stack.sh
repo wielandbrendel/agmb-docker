@@ -3,6 +3,7 @@
 # Build OpenBLAS and clean up build dependencies
 set -xe
 
+mkdir /tmp/build
 cd /tmp/build
 git config --global url.https://github.com/.insteadOf git://github.com/
 
