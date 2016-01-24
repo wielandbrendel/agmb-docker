@@ -16,13 +16,13 @@ All images come with different (or no) CUDA-libraries installed. Currently we su
     
 so, e.g. to pull the image *jupyter-deeplearning* with Cuda 7.0 and CuDNN v3 you would do
 
-    wielandbrendel/jupyter-deeplearning:cuda7.0-cudnn3
+    docker pull wielandbrendel/jupyter-deeplearning:cuda7.0-cudnn3
     
 Other available tags are *ubuntu-14.04* and *cuda6.5*.
 
 ### AGMB Docker wrapper
 
-To make the employment of the containers as painless as possible we have wrapped all important flags in the script ```agmb-docker``` (see root directory of repo), which is a modification of the ```nvidia-docker``` wrapper from the [nvidia-docker repository](https://github.com/NVIDIA/nvidia-docker). To run a container, first pull the image from Docker Hub (important - see below) before running the command
+To make the employment of the containers as painless as possible we have wrapped all important flags in the script ```agmb-docker``` (see root directory of repo), which is a modification of the ```nvidia-docker``` wrapper from the [nvidia-docker repository](https://github.com/NVIDIA/nvidia-docker). To run a container, first pull the image from Docker Hub (important - otherwise the CUDA version cannot be detected) before running the command
 
     GPU=0,1 /.agmb-docker run -d wielandbrendel/jupyter-deeplearning:cuda7.0-cudnn3
     
