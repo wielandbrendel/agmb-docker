@@ -45,6 +45,7 @@ RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
 
 RUN git clone https://github.com/facebook/iTorch.git ~/itorch
 RUN cd ~/itorch && luarocks make
+RUN cp -r /root/.ipython/* /usr/local/share/jupyter/
 
 # Install loadcaffe
 # -----------------
