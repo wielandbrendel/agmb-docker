@@ -55,6 +55,12 @@ run-deeplearning:
 	# docker pull wielandbrendel/jupyter-deeplearning:$(basetag)
 	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-deeplearning:$(basetag)
 
+build-scipyserver2:
+	docker build -t wielandbrendel/jupyter-scipyserver-python2:$(basetag) jupyter-scipyserver-python2/$(basetag)/
+
+build-scipyserver:
+	docker build -t wielandbrendel/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
+
 # opens the Dockerfile in vim and syncs across tags after closing
 docker-deeplearning: 
 	make docker-image image=jupyter-deeplearning baseimage=jupyter-scipyserver
@@ -111,5 +117,5 @@ setbase-dockerfile:
            sed -i '1 s%^.*%FROM wielandbrendel/$(baseimage):'$$tag'%' $(image)/$$tag/Dockerfile ; \
         done
 
-build-deeplearning-single:
+build-deeplearning:
 	docker build -t wielandbrendel/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
