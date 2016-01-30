@@ -115,3 +115,5 @@ RUN ./build.sh
 
 RUN ldconfig
 
+WORKDIR /
+
