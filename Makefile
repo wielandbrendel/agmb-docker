@@ -4,23 +4,23 @@ alltags=ubuntu-14.04 cuda6.5 cuda7.0-cudnn3
 ldapbaseimages=ubuntu:14.04 nvidia/cuda:6.5-devel nvidia/cuda:7.0-cudnn3-devel
 
 build-all:
-	docker build -t wielandbrendel/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
-	docker build -t wielandbrendel/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
-	docker build -t wielandbrendel/jupyter-scipyserver-python2:$(basetag) jupyter-scipyserver-python2/$(basetag)/
-	docker build -t wielandbrendel/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
-	docker build -t wielandbrendel/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
+	docker build -t bethgelab/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
+	docker build -t bethgelab/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
+	docker build -t bethgelab/jupyter-scipyserver-python2:$(basetag) jupyter-scipyserver-python2/$(basetag)/
+	docker build -t bethgelab/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
+	docker build -t bethgelab/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
 
 #
 # LDAP IMAGES
 # 
 build-ldap:
-	docker build -t wielandbrendel/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
+	docker build -t bethgelab/ldap-xserver:$(basetag) ldap-Xserver/$(basetag)/
 
 trouble-ldap:
-	GPU=0,1 ./agmb-docker run -it wielandbrendel/ldap-xserver:$(basetag)
+	GPU=0,1 ./agmb-docker run -it bethgelab/ldap-xserver:$(basetag)
 
 run-ldap:
-	GPU=0,1 ./agmb-docker run -d wielandbrendel/ldap-xserver:$(basetag)
+	GPU=0,1 ./agmb-docker run -d bethgelab/ldap-xserver:$(basetag)
 
 docker-ldap:
 	make vim-image image=ldap-Xserver file=Dockerfile
@@ -33,10 +33,10 @@ vim-ldap:
 # JUPYTER NOTEBOOK IMAGES
 # 
 build-notebook:
-	docker build -t wielandbrendel/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
+	docker build -t bethgelab/jupyter-notebook:$(basetag) jupyter-notebook/$(basetag)/
 
 run-notebook:
-	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-notebook:$(basetag)
+	GPU=0,1 ./agmb-docker run -d bethgelab/jupyter-notebook:$(basetag)
 
 docker-notebook:
 	make docker-image image=jupyter-notebook baseimage=ldap-xserver
@@ -48,18 +48,18 @@ vim-notebook:
 # JUPYTER SCIPYSERVER
 #
 run-scipyserver:
-	# docker pull wielandbrendel/jupyter-scipyserver:$(basetag)
-	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-scipyserver:$(basetag)
+	# docker pull bethgelab/jupyter-scipyserver:$(basetag)
+	GPU=0,1 ./agmb-docker run -d bethgelab/jupyter-scipyserver:$(basetag)
 
 run-deeplearning:
-	# docker pull wielandbrendel/jupyter-deeplearning:$(basetag)
-	GPU=0,1 ./agmb-docker run -d wielandbrendel/jupyter-deeplearning:$(basetag)
+	# docker pull bethgelab/jupyter-deeplearning:$(basetag)
+	GPU=0,1 ./agmb-docker run -d bethgelab/jupyter-deeplearning:$(basetag)
 
 build-scipyserver2:
-	docker build -t wielandbrendel/jupyter-scipyserver-python2:$(basetag) jupyter-scipyserver-python2/$(basetag)/
+	docker build -t bethgelab/jupyter-scipyserver-python2:$(basetag) jupyter-scipyserver-python2/$(basetag)/
 
 build-scipyserver:
-	docker build -t wielandbrendel/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
+	docker build -t bethgelab/jupyter-scipyserver:$(basetag) jupyter-scipyserver/$(basetag)/
 
 # opens the Dockerfile in vim and syncs across tags after closing
 docker-deeplearning: 
@@ -114,8 +114,8 @@ sync-file:
 # set the correct base images for all tags
 setbase-dockerfile:
 	for tag in $(alltags) ; do \
-           sed -i '1 s%^.*%FROM wielandbrendel/$(baseimage):'$$tag'%' $(image)/$$tag/Dockerfile ; \
+           sed -i '1 s%^.*%FROM bethgelab/$(baseimage):'$$tag'%' $(image)/$$tag/Dockerfile ; \
         done
 
 build-deeplearning:
-	docker build -t wielandbrendel/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
+	docker build -t bethgelab/jupyter-deeplearning:$(basetag) jupyter-deeplearning/$(basetag)/
